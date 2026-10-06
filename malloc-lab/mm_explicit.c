@@ -156,16 +156,16 @@ static void place(char *bp, size_t asize) {
   }
 
   if ((csize - asize) >= (3 * DSIZE)) {
-    /* 앞부분 할당 */
+    /* 헤더 할당 */
     PUT(HDRP(bp), PACK(asize, 1));
     PUT(FTRP(bp), PACK(asize, 1));
 
-    /* 남은 부분을 free 블록으로 구성 */
+    /* 남은 부분 free 블록으로 */
     bp = NEXT_BLXP(bp);
     PUT(HDRP(bp), PACK(csize - asize, 0));
     PUT(FTRP(bp), PACK(csize - asize, 0));
 
-    /* 남은 블록을 가용 리스트 맨 앞에 등록 */
+    /* 남은 블록 가용 리스트 맨 앞에 등록 */
     GET_FREE_PTR(bp)->p_prev = NULL;
     GET_FREE_PTR(bp)->p_next = last_free_bp;
     if (last_free_bp != NULL) {
@@ -173,7 +173,6 @@ static void place(char *bp, size_t asize) {
     }
     last_free_bp = bp;
   } else {
-    /* 분할할 공간이 부족하면 블록 전체 할당 */
     PUT(HDRP(bp), PACK(csize, 1));
     PUT(FTRP(bp), PACK(csize, 1));
   }
